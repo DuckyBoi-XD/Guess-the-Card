@@ -36,6 +36,9 @@ class Colours:
     RESET = '\033[0m'
 #----Colours----#
 
+#----Precode Variables----#
+CDC0 = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # Card Deck Completion representing none with 0
+
 #----Save File Money----#
 
 def to_binary_str(s):
@@ -78,5 +81,64 @@ def decode_save(encoded_bytes):
     # Base64 decode
     json_str = base64.b64decode(b64).decode('utf-8')
     return json_str
+
+
+def get_config_dir():
+    '''Return platform-appropriate config directory'''
+    return os.path.expanduser("~/.config/guess-the-duck")
+
+def load_game(): # access save file -JSON
+    '''loading save file - returns both money and name'''
+    config_dir = get_config_dir()
+    save_path = os.path.join(config_dir, "Guess-the-Duck.bin")
+    try:
+        with open(save_path, "rb") as f:
+            encoded_bytes = f.read()
+            json_str = decode_save(encoded_bytes)
+            data = json.loads(json_str)
+            print("Save file loaded")
+            return (data.get("wins", 0),
+                    data.get("name", None),
+                    data.get("Scards", CDC0),
+                    data.get("Ccards", CDC0),
+                    data.get("Dcards", CDC0),
+                    data.get("Hcards", CDC0))
+    except FileNotFoundError:
+        print("New player - no save file found")
+        return 0, None, CDC0, CDC0, CDC0, CDC0
+    except (ValueError, json.JSONDecodeError) as error:
+        print(f"Corrupted save file - using defaults. Error: {error}")
+        return 0, None, CDC0, CDC0, CDC0, CDC0
+
+def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcards=None):
+    '''saving game data'''
+    if wins is None:
+        wins = WINS
+    if name is None:
+        name = USER_NAME
+    if Scards is None:
+        Scards = SCARDS
+    if Ccards is None:
+        Ccards = CCARDS
+    if Dcards is None:
+        Dcards = DCARDS
+    if Hcards is None:
+        Hcards = HCARDS
+
+    data = {
+        "wins": wins,
+        "name": name,
+        "Scards": Scards,
+        "Ccards": Ccards,
+        "Dcards": Dcards,
+        "Hcards": Hcards,
+    }
+    json_str = json.dumps(data)
+    encoded_bytes = encode_save(json_str)
+    config_dir = get_config_dir()
+    os.makedirs(config_dir, exist_ok=True)
+    save_path = os.path.join(config_dir, "Guess-the-Duck.bin")
+    with open(save_path, "wb") as f:
+        f.write(encoded_bytes)
 
 #----Save File Money----#
