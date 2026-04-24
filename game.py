@@ -38,6 +38,12 @@ class Colours:
 
 #----Precode Variables----#
 CDC0 = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # Card Deck Completion representing none with 0
+WINS = None
+USER_NAME = None
+SCARDS = None
+CCARDS = None
+DCARDS = None
+HCARDS = None
 
 #----Save File Money----#
 
@@ -142,3 +148,8 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
         f.write(encoded_bytes)
 
 #----Save File Money----#
+
+#----Variable----#
+
+WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
+CARD_SUITS = ("♠", "♦", "♥", "♣")
