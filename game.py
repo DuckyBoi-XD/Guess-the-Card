@@ -153,3 +153,32 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
 
 WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
+
+#----Variable----#
+
+#----Function Variables----#
+
+def LINE():
+    ''''creates line spacing'''
+    print(f"{Colours.BOLD}{Colours.MAGENTA}======----------================----------======{Colours.RESET}")
+
+def clear_screen():
+    ''''clear screen function'''
+    os.system('clear')  # Unix/Linux/macOS only
+
+def is_float(variable):
+    '''check if value is a float'''
+    try:
+        float(variable)
+        return True
+    except ValueError:
+        return False
+
+#----Function Variables----#
+
+#----Main Game----#
+
+def main():
+    pass
+
+#----Main Game----#
