@@ -175,7 +175,7 @@ for suit in CARD_SUITS:
 
 def LINE():
     ''''creates line spacing'''
-    print(f"{Colours.BOLD}{Colours.MAGENTA}======----------================----------======{Colours.RESET}")
+    print(f"{Colours.BOLD}{Colours.MAGENTA}|====================----------------------{Colours.RESET}")
 
 def clear_screen():
     ''''clear screen function'''
@@ -202,11 +202,12 @@ def CLI_SW():
     '''Command Line Interface Size Warning'''
 
     while True:
+        clear_screen()
         width, height = shutil.get_terminal_size()
-        if width < 100 or height < 30:
-            if width < 100:
+        if width < 110 or height < 30:
+            if width < 110:
                 ColourSWW = Colours.RED
-            elif width >= 100:
+            elif width >= 110:
                 ColourSWW = Colours.GREEN
             else:
                 ColourSWW = Colours.WHITE
@@ -216,18 +217,19 @@ def CLI_SW():
                 ColourSWH = Colours.GREEN
             else:
                 ColourSWH = Colours.WHITE
-            print(f"{Colours.BOLD}Terminal size too small:")
-            print(f"Width: {ColourSWW}{width}{Colours.RESET} | Height: {ColourSWH}{height}{Colours.RESET}")
-            width2, height2 = shutil.get_terminal_size()
+            print(f"{Colours.BOLD}Terminal size too small:{Colours.RESET}\n"
+                  f"Width: {ColourSWW}{width}{Colours.RESET} | Height: {ColourSWH}{height}{Colours.RESET}\n\n"
+                  f"Required size:\n"
+                  f"Width: {Colours.BOLD}110{Colours.RESET} | Height: {Colours.BOLD}30{Colours.RESET}")
             while True:
+                width2, height2 = shutil.get_terminal_size()
                 if width != width2 or height != height2:
-                    return
+                    break
                 elif width == width2 and height == height2:
-                    time.sleep(0.2)
+                    time.sleep(0.25)
                     continue
-        elif width >= 100 and height >= 30:
-            continue
-
+        elif width >= 110 and height >= 30:
+            break
 
 
 
@@ -244,26 +246,19 @@ def start():
     LINE()
     print_tw(f"{Colours.BOLD}Welcome to....\n", 0.05)
     time.sleep(1)
-    print(" ██████╗ ██╗   ██╗███████╗███████╗███████╗    ████████╗██╗  ██╗███████╗\n"
-          "██╔════╝ ██║   ██║██╔════╝██╔════╝██╔════╝    ╚══██╔══╝██║  ██║██╔════╝\n" 
-          "██║  ███╗██║   ██║█████╗  ███████╗███████╗       ██║   ███████║█████╗  \n" \
-          "██║   ██║██║   ██║██╔══╝  ╚════██║╚════██║       ██║   ██╔══██║██╔══╝  \n" \
-          "╚██████╔╝╚██████╔╝███████╗███████║███████║       ██║   ██║  ██║███████╗\n" \
-          " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝\n" \
-          "██████╗ ██╗   ██╗ ██████╗██╗  ██╗\n" \
-          "██╔══██╗██║   ██║██╔════╝██║ ██╔╝\n" \
-          "██║  ██║██║   ██║██║     █████╔╝ \n" \
-          "██║  ██║██║   ██║██║     ██╔═██╗ \n" \
-          "██████╔╝╚██████╔╝╚██████╗██║  ██╗\n" \
-          "╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n" 
-        )                                                                  
+    print(" ██████╗ ██╗   ██╗███████╗███████╗███████╗    ████████╗██╗  ██╗███████╗    ██████╗ ██╗   ██╗ ██████╗██╗  ██╗\n"
+          "██╔════╝ ██║   ██║██╔════╝██╔════╝██╔════╝    ╚══██╔══╝██║  ██║██╔════╝    ██╔══██╗██║   ██║██╔════╝██║ ██╔╝\n" 
+          "██║  ███╗██║   ██║█████╗  ███████╗███████╗       ██║   ███████║█████╗      ██║  ██║██║   ██║██║     █████╔╝ \n" \
+          "██║   ██║██║   ██║██╔══╝  ╚════██║╚════██║       ██║   ██╔══██║██╔══╝      ██║  ██║██║   ██║██║     ██╔═██╗ \n" \
+          "╚██████╔╝╚██████╔╝███████╗███████║███████║       ██║   ██║  ██║███████╗    ██████╔╝╚██████╔╝╚██████╗██║  ██╗\n" \
+          " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n" )
 
 #----Main Game----#
 
 def main():
     clear_screen()
     CLI_SW()
-    print("Good")
+    start()
 
 
 #----Main Game----#
