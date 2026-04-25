@@ -8,6 +8,7 @@ import time
 import sys
 import termios
 import tty
+import shutil
 
 #----Colours----#
 class Colours:
@@ -196,6 +197,40 @@ def print_tw(sentence, type_delay=0.01):
         time.sleep(type_delay)
     sys.stdout.write('\n')
     sys.stdout.flush()
+
+def CLI_SW():
+    '''Command Line Interface Size Warning'''
+
+    while True:
+        width, height = shutil.get_terminal_size()
+        if width < 100 or height < 30:
+            if width < 100:
+                ColourSWW = Colours.RED
+            elif width >= 100:
+                ColourSWW = Colours.GREEN
+            else:
+                ColourSWW = Colours.WHITE
+            if height < 30:
+                ColourSWH = Colours.RED
+            elif height >= 30:
+                ColourSWH = Colours.GREEN
+            else:
+                ColourSWH = Colours.WHITE
+            print(f"{Colours.BOLD}Terminal size too small:")
+            print(f"Width: {ColourSWW}{width}{Colours.RESET} | Height: {ColourSWH}{height}{Colours.RESET}")
+            width2, height2 = shutil.get_terminal_size()
+            while True:
+                if width != width2 or height != height2:
+                    return
+                elif width == width2 and height == height2:
+                    time.sleep(0.2)
+                    continue
+        elif width >= 100 and height >= 30:
+            continue
+
+
+
+
 #----Function Variables----#
 
 #------------------------------------#
@@ -227,7 +262,8 @@ def start():
 
 def main():
     clear_screen()
-    start()
+    CLI_SW()
+    print("Good")
 
 
 #----Main Game----#
