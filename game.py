@@ -232,9 +232,102 @@ def CLI_SW():
         elif width >= 110 and height >= 30:
             break
 
-
-
 #----Function Variables----#
+
+#----Single Key Track----#
+def key_press(option):
+    '''single key tracking - Unix/macOS'''
+    try:
+        if option == 0:
+            print(f"{Colours.RED}Press any key to continue{Colours.RESET}")
+        elif option == 1:
+            print(f"{Colours.RED}Press any key to return to menu{Colours.RESET}")
+        
+        # Unix/Linux/macOS with termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return True
+    except (KeyboardInterrupt, EOFError):
+        print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
+        sys.exit()
+
+#----Single Key Track----#
+
+#----Arrow Key Track----#
+def arrow_key():
+    '''reads and looks for arrow press - Unix/macOS'''
+    try:
+        # Unix/Linux/macOS
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            key = sys.stdin.read(1)
+            
+            # Check for CTRL-C and CTRL-D in raw mode
+            if ord(key) == 3:  # CTRL-C
+                print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
+                sys.exit()
+            elif ord(key) == 4:  # CTRL-D
+                print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
+                sys.exit()
+            
+            # Check for escape sequence (arrow keys)
+            if ord(key) == 27:  # ESC
+                key += sys.stdin.read(2)  # Read the next 2 characters (for arrows)
+                
+            return key
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    except (KeyboardInterrupt, EOFError):
+        print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
+        sys.exit()
+#----Arrow Key Track----#
+
+#----Arrow Key Menu System----#
+
+def arrow_menu(title, text, options):
+    """generic arrow key menu system"""
+    try:
+        selected = 0
+        while True:
+            clear_screen()  # Clear screen for smooth animation
+            # Display menu options
+            for i, option in enumerate(options):
+                if i == selected:
+                    print(f"{Colours.BOLD}{Colours.YELLOW}► {option}{Colours.RESET}")
+                else:
+                    print(f"{Colours.WHITE}  {option}{Colours.RESET}")
+            LINE()
+            key = arrow_key()
+            
+            # Handle arrow keys and other inputs for Unix/macOS
+            if len(key) > 1:
+                if key == '\x1b[A':  # Up arrow
+                    selected = (selected - 1) % len(options)
+                elif key == '\x1b[B':  # Down arrow
+                    selected = (selected + 1) % len(options)
+                elif ord(key[0]) == 13:  # Enter
+                    return selected
+                elif len(key) == 1 and ord(key) == 27:  # ESC alone
+                    return -1
+            elif len(key) == 1:
+                if key.lower() == 'w':  # W key - up
+                    selected = (selected - 1) % len(options)
+                elif key.lower() == 's':  # S key - down
+                    selected = (selected + 1) % len(options)
+                elif key == '\r' or key == '\n':  # Enter
+                    return selected
+    except (KeyboardInterrupt, EOFError):
+        print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
+        sys.exit()
+
+#----Arrow Key Menu System----#
 
 #------------------------------------#
 #============GAME FUNCTIONS==========#
