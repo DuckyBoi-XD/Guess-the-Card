@@ -154,7 +154,11 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
 
 WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
-
+cardSuits = ["♠", "♦", "♥", "♣"]
+sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
+cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
+dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
+hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
 #----Variable----#
 
 #----Card Deck----#
@@ -204,6 +208,7 @@ def CLI_SW():
     while True:
         clear_screen()
         global width
+        global height
         width, height = shutil.get_terminal_size()
         if width < 110 or height < 30:
             if width < 110:
@@ -218,13 +223,20 @@ def CLI_SW():
                 ColourSWH = Colours.GREEN
             else:
                 ColourSWH = Colours.WHITE
-            print(f"{Colours.BOLD}Terminal size too small:{Colours.RESET}\n"
-                  f"Width: {ColourSWW}{width}{Colours.RESET} | Height: {ColourSWH}{height}{Colours.RESET}\n\n"
-                  f"Required size:\n"
-                  f"Width: {Colours.BOLD}110{Colours.RESET} | Height: {Colours.BOLD}30{Colours.RESET}")
+
+            height_top_bottom = 12 * "\n"
+            spaces_TS = 43 * " "
+            spaces_WH = 45 * " "
+            spaces_RS = 48 * " "
+            spaces_WH2 = 44 * " "
+            print(f"{height_top_bottom}{spaces_TS}{Colours.BOLD}Terminal size too small:{Colours.RESET}\n"
+                  f"{spaces_WH}Width: {ColourSWW}{width}{Colours.RESET} | Height: {ColourSWH}{height}{Colours.RESET}\n\n"
+                  f"{spaces_RS}Required size:\n"
+                  f"{spaces_WH2}Width: {Colours.BOLD}110{Colours.RESET} | Height: {Colours.BOLD}30{Colours.RESET}{height_top_bottom} ")
             while True:
                 width2, height2 = shutil.get_terminal_size()
                 if width != width2 or height != height2:
+                    clear_screen()
                     break
                 elif width == width2 and height == height2:
                     time.sleep(0.25)
@@ -305,7 +317,7 @@ def arrow_menu(title, text, options):
                     print(f"{Colours.WHITE}  {option}{Colours.RESET}")
             LINE()
             key = arrow_key()
-            
+
             # Handle arrow keys and other inputs for Unix/macOS
             if len(key) > 1:
                 if key == '\x1b[A':  # Up arrow
@@ -350,7 +362,8 @@ def start():
           "██║   ██║██║   ██║██╔══╝  ╚════██║╚════██║       ██║   ██╔══██║██╔══╝      ██║  ██║██║   ██║██║     ██╔═██╗ \n" \
           "╚██████╔╝╚██████╔╝███████╗███████║███████║       ██║   ██║  ██║███████╗    ██████╔╝╚██████╔╝╚██████╗██║  ██╗\n" \
           " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n\n", 0.001)
-    print(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.{Colours.RESET}\n"
+    print(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
+          f"When you successfully geuss a card, it will be removed from the deck{Colours.RESET}\n\n"
           f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'")
     LINE()
 
