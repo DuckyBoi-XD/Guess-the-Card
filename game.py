@@ -156,6 +156,20 @@ CARD_SUITS = ("♠", "♦", "♥", "♣")
 
 #----Variable----#
 
+#----Card Deck----#
+CardDeck = {}
+
+for suit in CARD_SUITS:
+    for value_card in range(2, 11):
+        CardDeck[f"{value_card}{suit}"] = value_card
+
+for suit in CARD_SUITS:
+    CardDeck[f"D{suit}"] = 11
+    CardDeck[f"Q{suit}"] = 12
+    CardDeck[f"K{suit}"] = 13
+    CardDeck[f"A{suit}"] = 14
+#----Card Deck----#
+
 #----Function Variables----#
 
 def LINE():
@@ -174,11 +188,48 @@ def is_float(variable):
     except ValueError:
         return False
 
+def print_tw(sentence, type_delay=0.01):
+    '''creates a type writer effect'''
+    for char in sentence:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(type_delay)
+    sys.stdout.write('\n')
+    sys.stdout.flush()
 #----Function Variables----#
+
+#------------------------------------#
+#============GAME FUNCTIONS==========#
+#------------------------------------#
+
+#----Starting Game----#
+
+def start():
+    clear_screen()
+    LINE()
+    print_tw(f"{Colours.BOLD}Welcome to....\n", 0.05)
+    time.sleep(1)
+    print(" ██████╗ ██╗   ██╗███████╗███████╗███████╗    ████████╗██╗  ██╗███████╗\n"
+          "██╔════╝ ██║   ██║██╔════╝██╔════╝██╔════╝    ╚══██╔══╝██║  ██║██╔════╝\n" 
+          "██║  ███╗██║   ██║█████╗  ███████╗███████╗       ██║   ███████║█████╗  \n" \
+          "██║   ██║██║   ██║██╔══╝  ╚════██║╚════██║       ██║   ██╔══██║██╔══╝  \n" \
+          "╚██████╔╝╚██████╔╝███████╗███████║███████║       ██║   ██║  ██║███████╗\n" \
+          " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝\n" \
+          "██████╗ ██╗   ██╗ ██████╗██╗  ██╗\n" \
+          "██╔══██╗██║   ██║██╔════╝██║ ██╔╝\n" \
+          "██║  ██║██║   ██║██║     █████╔╝ \n" \
+          "██║  ██║██║   ██║██║     ██╔═██╗ \n" \
+          "██████╔╝╚██████╔╝╚██████╗██║  ██╗\n" \
+          "╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n" 
+        )                                                                  
 
 #----Main Game----#
 
 def main():
-    pass
+    clear_screen()
+    start()
+
 
 #----Main Game----#
+
+main()
