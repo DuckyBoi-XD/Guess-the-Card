@@ -245,8 +245,7 @@ def CLI_SW():
 def start():
     clear_screen()
     LINE()
-    widthspace = (int(width) - 14 ) // 2
-    spaces = widthspace * " "
+    spaces = 47 * " "
     sys.stdout.write(spaces)
     print_tw(f"{Colours.BOLD}Welcome to....\n{Colours.RESET}", 0.05)
     sys.stdout.write(spaces)
