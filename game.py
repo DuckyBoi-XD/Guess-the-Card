@@ -175,7 +175,7 @@ for suit in CARD_SUITS:
 
 def LINE():
     ''''creates line spacing'''
-    print(f"{Colours.BOLD}{Colours.MAGENTA}|====================----------------------{Colours.RESET}")
+    print(f"{Colours.BOLD}{Colours.MAGENTA}|====================--------------------==========--------==========--------------------====================|{Colours.RESET}")
 
 def clear_screen():
     ''''clear screen function'''
@@ -203,6 +203,7 @@ def CLI_SW():
 
     while True:
         clear_screen()
+        global width
         width, height = shutil.get_terminal_size()
         if width < 110 or height < 30:
             if width < 110:
@@ -244,7 +245,12 @@ def CLI_SW():
 def start():
     clear_screen()
     LINE()
-    print_tw(f"{Colours.BOLD}Welcome to....\n", 0.05)
+    widthspace = (int(width) - 14 ) // 2
+    spaces = widthspace * " "
+    sys.stdout.write(spaces)
+    print_tw(f"{Colours.BOLD}Welcome to....\n{Colours.RESET}", 0.05)
+    sys.stdout.write(spaces)
+    print("")
     time.sleep(1)
     print_tw(" ██████╗ ██╗   ██╗███████╗███████╗███████╗    ████████╗██╗  ██╗███████╗    ██████╗ ██╗   ██╗ ██████╗██╗  ██╗\n"
           "██╔════╝ ██║   ██║██╔════╝██╔════╝██╔════╝    ╚══██╔══╝██║  ██║██╔════╝    ██╔══██╗██║   ██║██╔════╝██║ ██╔╝\n" 
@@ -254,6 +260,7 @@ def start():
           " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n\n", 0.001)
     print(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.{Colours.RESET}\n"
           f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'")
+    LINE()
 
 #----Main Game----#
 
