@@ -318,9 +318,7 @@ def arrow_menu(title, text, options, menu_orientation):
     try:
         selected = 1
         card_numbers_menu = "|"
-        card_number = {}
         arrow_space = None
-        card_number_tracking = True
         while True:
             flush_clear_screen()
             clear_screen()
@@ -339,22 +337,23 @@ def arrow_menu(title, text, options, menu_orientation):
                     else:
                         print(f"{Colours.WHITE}  {option}{Colours.RESET}")
             elif menu_orientation == 1:
+                card_numbers_menu = "|"
                 for i, option in enumerate(options, start=1):
+                    card_number = f" {option} |"
+
                     if i == selected:
-                        card_number[i] = f" {Colours.YELLOW}{option}{Colours.RESET} |"
-                        if i == 10:
-                            arrow_space = " " *((i * 4) - 1)
-                        else:
-                            arrow_space = " " *((i * 4) - 2)
+                        card_number = f" {Colours.YELLOW}{option}{Colours.RESET} |"
+                    if selected == 10:
+                        arrow_space = " " * (selected * 4 - 1)
+                    elif selected > 10:
+                        arrow_space = " " * ((selected - 1) * 4 - 2 + (1 * 4 + 1))
                     else:
-                        card_number[i] = f" {option} |"
-                    if card_number_tracking is True:
-                        card_numbers_menu = card_numbers_menu + card_number[i]
-                    else:
-                        pass
+                        arrow_space = " " * (selected * 4 - 2)
+                        
+                    card_numbers_menu += card_number
+
                 print(card_numbers_menu)
                 print(f"{arrow_space}{Colours.BOLD}{Colours.YELLOW}▲{Colours.RESET}")
-                card_number_tracking = False
 
             LINE()
             key = arrow_key()
@@ -364,19 +363,19 @@ def arrow_menu(title, text, options, menu_orientation):
                 if len(key) > 1:
                     n = len(options)
                     if key == '\x1b[C':  # right arrow
-                        selected = ((selected - 1) % n) + 1
-                    elif key == '\x1b[D':  # left arrow
                         selected = (selected % n) + 1
+                    elif key == '\x1b[D':  # left arrow
+                        selected = ((selected - 2) % n) + 1
                     elif ord(key[0]) == 13:  # Enter
                         return selected
                     elif len(key) == 1 and ord(key) == 27:  # ESC alone
                         return -1
                 elif len(key) == 1:
                     n = len(options)
-                    if key.lower() == 'd':  # d key - up
-                        selected = ((selected - 1) % n) + 1
-                    elif key.lower() == 'a':  # a key - down
+                    if key.lower() == 'd':  # d key - right
                         selected = (selected % n) + 1
+                    elif key.lower() == 'a':  # a key - left
+                        selected = ((selected - 2) % n) + 1
                     elif key == '\r' or key == '\n':  # Enter
                         return selected
             else:
