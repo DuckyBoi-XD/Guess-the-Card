@@ -154,14 +154,15 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
 
 WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
-cardSuits = ["♠", "♦", "♥", "♣"]
-sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
-cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
-dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
-hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
+cardSuits = [f"{Colours.BLACK}♠{Colours.RESET}", f"{Colours.RED}♦{Colours.RESET}", f"{Colours.BLACK}♣{Colours.RESET}", f"{Colours.RED}♥{Colours.RESET}" ]
+cardNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
-GuessProgress = 0
-GuessPercent = GuessProgress / 52
+GUESS_PROGRESS = 0
+GUESS_PERCENT = GUESS_PROGRESS / 52
 
 #----Variable----#
 
@@ -188,6 +189,11 @@ def LINE():
 def clear_screen():
     ''''clear screen function'''
     os.system('clear')  # Unix/Linux/macOS only
+
+def flush_clear_screen():
+    ''''clear screen function but with flushing'''
+    sys.stdout.write("\033[2J\033[H")
+    sys.stdout.flush()
 
 def is_float(variable):
     '''check if value is a float'''
@@ -307,45 +313,89 @@ def arrow_key():
 
 #----Arrow Key Menu System----#
 
-def arrow_menu(title, text, options):
+def arrow_menu(title, text, options, menu_orientation):
     """generic arrow key menu system"""
     try:
-        selected = 0
+        selected = 1
+        card_numbers_menu = "|"
+        card_number = {}
+        arrow_space = None
+        card_number_tracking = True
         while True:
+            flush_clear_screen()
+            clear_screen()
             LINE()
             print(f"{Colours.BOLD}{Colours.CYAN}{title}")
             LINE()
             if text is not None:
-                print(text)
+                print(text + "\n")
             else:
                 pass
-            clear_screen()  # Clear screen for smooth animation
             # Display menu options
-            for i, option in enumerate(options):
-                if i == selected:
-                    print(f"{Colours.BOLD}{Colours.YELLOW}► {option}{Colours.RESET}")
-                else:
-                    print(f"{Colours.WHITE}  {option}{Colours.RESET}")
+            if menu_orientation == 0:
+                for i, option in enumerate(options):
+                    if i == selected:
+                        print(f"{Colours.BOLD}{Colours.YELLOW}► {option}{Colours.RESET}")
+                    else:
+                        print(f"{Colours.WHITE}  {option}{Colours.RESET}")
+            elif menu_orientation == 1:
+                for i, option in enumerate(options, start=1):
+                    if i == selected:
+                        card_number[i] = f" {Colours.YELLOW}{option}{Colours.RESET} |"
+                        if i == 10:
+                            arrow_space = " " *((i * 4) - 1)
+                        else:
+                            arrow_space = " " *((i * 4) - 2)
+                    else:
+                        card_number[i] = f" {option} |"
+                    if card_number_tracking is True:
+                        card_numbers_menu = card_numbers_menu + card_number[i]
+                    else:
+                        pass
+                print(card_numbers_menu)
+                print(f"{arrow_space}{Colours.BOLD}{Colours.YELLOW}▲{Colours.RESET}")
+                card_number_tracking = False
+
             LINE()
             key = arrow_key()
             CLI_SW()
             # Handle arrow keys and other inputs for Unix/macOS
-            if len(key) > 1:
-                if key == '\x1b[A':  # Up arrow
-                    selected = (selected - 1) % len(options)
-                elif key == '\x1b[B':  # Down arrow
-                    selected = (selected + 1) % len(options)
-                elif ord(key[0]) == 13:  # Enter
-                    return selected
-                elif len(key) == 1 and ord(key) == 27:  # ESC alone
-                    return -1
-            elif len(key) == 1:
-                if key.lower() == 'w':  # W key - up
-                    selected = (selected - 1) % len(options)
-                elif key.lower() == 's':  # S key - down
-                    selected = (selected + 1) % len(options)
-                elif key == '\r' or key == '\n':  # Enter
-                    return selected
+            if menu_orientation == 1:
+                if len(key) > 1:
+                    n = len(options)
+                    if key == '\x1b[C':  # right arrow
+                        selected = ((selected - 1) % n) + 1
+                    elif key == '\x1b[D':  # left arrow
+                        selected = (selected % n) + 1
+                    elif ord(key[0]) == 13:  # Enter
+                        return selected
+                    elif len(key) == 1 and ord(key) == 27:  # ESC alone
+                        return -1
+                elif len(key) == 1:
+                    n = len(options)
+                    if key.lower() == 'd':  # d key - up
+                        selected = ((selected - 1) % n) + 1
+                    elif key.lower() == 'a':  # a key - down
+                        selected = (selected % n) + 1
+                    elif key == '\r' or key == '\n':  # Enter
+                        return selected
+            else:
+                if len(key) > 1:
+                    if key == '\x1b[A':  # up arrow
+                        selected = (selected - 1) % len(options)
+                    elif key == '\x1b[B':  # left arrow
+                        selected = (selected + 1) % len(options)
+                    elif ord(key[0]) == 13:  # Enter
+                        return selected
+                    elif len(key) == 1 and ord(key) == 27:  # ESC alone
+                        return -1
+                elif len(key) == 1:
+                    if key.lower() == 'w':  # w key - up
+                        selected = (selected - 1) % len(options)
+                    elif key.lower() == 's':  # s key - down
+                        selected = (selected + 1) % len(options)
+                    elif key == '\r' or key == '\n':  # Enter
+                        return selected
     except (KeyboardInterrupt, EOFError):
         print(f"\n{Colours.RED}Thanks for playing Guess the Duck{Colours.RESET}")
         sys.exit()
@@ -359,6 +409,7 @@ def arrow_menu(title, text, options):
 #----Starting Game----#
 
 def start():
+    '''Starting game function'''
     clear_screen()
     LINE()
     sys.stdout.write(47 * " ")
@@ -380,6 +431,7 @@ def start():
     print_tw(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
           f"When you successfully geuss a card, it will be removed from the deck{Colours.RESET}\n\n"
           f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'\n\n"
+          f""
           , 0.0005)
     LINE()
     key_press(0)
@@ -387,13 +439,60 @@ def start():
 #----Game Function----#
 
 def game():
-    arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\nWins: {WINS} | Guess %: {GuessPercent}", 
-               f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick a card {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}", 
-               cardSuits)
+    '''guessing game function'''
+    while True:
+        suit_choice = arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", 
+                f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick the card suit {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}",
+                cardSuits, 0)
+        if suit_choice == 0:
+            suit_logo = f"{Colours.BLACK}♠{Colours.RESET}"
+            suit_number_cards = sSuitNumbers
+        elif suit_choice == 1:
+            suit_logo = f"{Colours.RED}♦{Colours.RESET}"
+            suit_number_cards = dSuitNumbers
+        elif suit_choice == 2:
+            suit_logo = f"{Colours.BLACK}♣{Colours.RESET}"
+            suit_number_cards = cSuitNumbers
+        elif suit_choice == 3:
+            suit_logo = f"{Colours.RED}♥{Colours.RESET}"
+            suit_number_cards = hSuitNumbers
+        else:
+            suit_logo = "ERRORRRRRRR!!!^&$#^@*$&^##*@%$@&!&@"
+            suit_number_cards = "EERRROORRORO#($&@^%^&*(@*&^%$#*#))"
+        while True:
+            number_choice = arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", 
+                f"{suit_logo} Pick the card value {suit_logo}",
+                suit_number_cards, 1)
+            if number_choice == 0:
+                print(2)
+            if number_choice == 1:
+                print(3)
+            if number_choice == 2:
+                print(4)
+            if number_choice == 3:
+                print(5)
+            if number_choice == 4:
+                print(6)
+            if number_choice == 5:
+                print(7)
+            if number_choice == 6:
+                print(8)
+            if number_choice == 7:
+                print(9)
+            if number_choice == 8:
+                print(10)
+            if number_choice == 9:
+                print("J")
+            if number_choice == 10:
+                print("Q")
+            if number_choice == 11:
+                print("K")
+    
 
 #----Main Game----#
 
 def main():
+    '''main game function'''
     clear_screen()
     CLI_SW()
     start()
