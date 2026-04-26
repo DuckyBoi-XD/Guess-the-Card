@@ -159,6 +159,10 @@ sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
 cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
 dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
 hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",]
+
+GuessProgress = 0
+GuessPercent = GuessProgress / 52
+
 #----Variable----#
 
 #----Card Deck----#
@@ -206,11 +210,11 @@ def CLI_SW():
     '''Command Line Interface Size Warning'''
 
     while True:
-        clear_screen()
         global width
         global height
         width, height = shutil.get_terminal_size()
         if width < 110 or height < 30:
+            clear_screen()
             if width < 110:
                 ColourSWW = Colours.RED
             elif width >= 110:
@@ -254,7 +258,7 @@ def key_press(option):
             print(f"{Colours.RED}Press any key to continue{Colours.RESET}")
         elif option == 1:
             print(f"{Colours.RED}Press any key to return to menu{Colours.RESET}")
-        
+        CLI_SW()
         # Unix/Linux/macOS with termios
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
@@ -308,6 +312,13 @@ def arrow_menu(title, text, options):
     try:
         selected = 0
         while True:
+            LINE()
+            print(f"{Colours.BOLD}{Colours.CYAN}{title}")
+            LINE()
+            if text is not None:
+                print(text)
+            else:
+                pass
             clear_screen()  # Clear screen for smooth animation
             # Display menu options
             for i, option in enumerate(options):
@@ -317,7 +328,7 @@ def arrow_menu(title, text, options):
                     print(f"{Colours.WHITE}  {option}{Colours.RESET}")
             LINE()
             key = arrow_key()
-
+            CLI_SW()
             # Handle arrow keys and other inputs for Unix/macOS
             if len(key) > 1:
                 if key == '\x1b[A':  # Up arrow
@@ -350,10 +361,9 @@ def arrow_menu(title, text, options):
 def start():
     clear_screen()
     LINE()
-    spaces = 47 * " "
-    sys.stdout.write(spaces)
+    sys.stdout.write(47 * " ")
     print_tw(f"{Colours.BOLD}Welcome to....\n{Colours.RESET}", 0.05)
-    sys.stdout.write(spaces)
+    sys.stdout.write(47 * " ")
     print("")
     time.sleep(1)
     print_tw(" ██████╗ ██╗   ██╗███████╗███████╗███████╗    ████████╗██╗  ██╗███████╗    ██████╗ ██╗   ██╗ ██████╗██╗  ██╗\n"
@@ -361,11 +371,25 @@ def start():
           "██║  ███╗██║   ██║█████╗  ███████╗███████╗       ██║   ███████║█████╗      ██║  ██║██║   ██║██║     █████╔╝ \n" \
           "██║   ██║██║   ██║██╔══╝  ╚════██║╚════██║       ██║   ██╔══██║██╔══╝      ██║  ██║██║   ██║██║     ██╔═██╗ \n" \
           "╚██████╔╝╚██████╔╝███████╗███████║███████║       ██║   ██║  ██║███████╗    ██████╔╝╚██████╔╝╚██████╗██║  ██╗\n" \
-          " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝\n\n", 0.001)
-    print(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
+          " ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝       ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝", 0.001)
+    sys.stdout.write(44 * " ")
+    print_tw(f"{Colours.BLUE}Created by Duckyboi_XD{Colours.RESET}", 0.001)
+    sys.stdout.write(40 * " ")
+    print_tw("Created for Hackclub Macondo\n", 0.001)
+
+    print_tw(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
           f"When you successfully geuss a card, it will be removed from the deck{Colours.RESET}\n\n"
-          f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'")
+          f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'\n\n"
+          , 0.0005)
     LINE()
+    key_press(0)
+
+#----Game Function----#
+
+def game():
+    arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\nWins: {WINS} | Guess %: {GuessPercent}", 
+               f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick a card {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}", 
+               cardSuits)
 
 #----Main Game----#
 
@@ -373,8 +397,16 @@ def main():
     clear_screen()
     CLI_SW()
     start()
-
-
+    CLI_SW()
+    clear_screen()
+    game()
 #----Main Game----#
 
 main()
+
+'''
+rb_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}  "
+rb_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│{number}   │{Colours.RESET}  "
+rb_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit} │{Colours.RESET}  "
+rb_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}  "
+'''
