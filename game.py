@@ -154,15 +154,26 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
 
 WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
-cardSuits = [f"{Colours.BLACK}♠{Colours.RESET}", f"{Colours.RED}♦{Colours.RESET}", f"{Colours.BLACK}♣{Colours.RESET}", f"{Colours.RED}♥{Colours.RESET}" ]
-cardNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
 GUESS_PROGRESS = 0
 GUESS_PERCENT = GUESS_PROGRESS / 52
+cardSuits = [f"{Colours.BLACK}♠ - Spades{Colours.RESET}", f"{Colours.RED}♦ - Diamonds{Colours.RESET}", f"{Colours.BLACK}♣ - Clubs{Colours.RESET}", f"{Colours.RED}♥ - Hearts{Colours.RESET}" ]
+cardNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+Confirm_Redo = ["✅ Confirm", "🔄 Redo"]
+GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}"
+
+cd_top = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}"
+cd_top_mid = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│{number}   │{Colours.RESET}"
+cd_bottom_mid = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit} │{Colours.RESET}"
+cd_bottom = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}"
+
+
+
+
 
 #----Variable----#
 
@@ -316,9 +327,10 @@ def arrow_key():
 def arrow_menu(title, text, options, menu_orientation):
     """generic arrow key menu system"""
     try:
-        selected = 1
         card_numbers_menu = "|"
+        selected = 0
         arrow_space = None
+        menu_orientation_selection = False
         while True:
             flush_clear_screen()
             clear_screen()
@@ -331,18 +343,24 @@ def arrow_menu(title, text, options, menu_orientation):
                 pass
             # Display menu options
             if menu_orientation == 0:
+                if menu_orientation_selection is False:
+                    selected = 0
+                    menu_orientation_selection = True
                 for i, option in enumerate(options):
                     if i == selected:
                         print(f"{Colours.BOLD}{Colours.YELLOW}► {option}{Colours.RESET}")
                     else:
                         print(f"{Colours.WHITE}  {option}{Colours.RESET}")
             elif menu_orientation == 1:
+                if menu_orientation_selection is False:
+                    selected = 1
+                    menu_orientation_selection = True
                 card_numbers_menu = "|"
                 for i, option in enumerate(options, start=1):
                     card_number = f" {option} |"
 
                     if i == selected:
-                        card_number = f" {Colours.YELLOW}{option}{Colours.RESET} |"
+                        card_number = f" {Colours.RESET}{Colours.YELLOW}{option}{Colours.RESET} |"
                     if selected == 10:
                         arrow_space = " " * (selected * 4 - 1)
                     elif selected > 10:
@@ -446,46 +464,59 @@ def game():
         if suit_choice == 0:
             suit_logo = f"{Colours.BLACK}♠{Colours.RESET}"
             suit_number_cards = sSuitNumbers
+            card_colour = Colours.BLACK
         elif suit_choice == 1:
             suit_logo = f"{Colours.RED}♦{Colours.RESET}"
             suit_number_cards = dSuitNumbers
+            card_colour = Colours.RED
         elif suit_choice == 2:
             suit_logo = f"{Colours.BLACK}♣{Colours.RESET}"
             suit_number_cards = cSuitNumbers
+            card_colour = Colours.BLACK
         elif suit_choice == 3:
             suit_logo = f"{Colours.RED}♥{Colours.RESET}"
             suit_number_cards = hSuitNumbers
+            card_colour = Colours.RED
         else:
             suit_logo = "ERRORRRRRRR!!!^&$#^@*$&^##*@%$@&!&@"
             suit_number_cards = "EERRROORRORO#($&@^%^&*(@*&^%$#*#))"
+            card_colour = {Colours.BLACK}
         while True:
             number_choice = arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", 
                 f"{suit_logo} Pick the card value {suit_logo}",
                 suit_number_cards, 1)
-            if number_choice == 0:
-                print(2)
-            if number_choice == 1:
-                print(3)
-            if number_choice == 2:
-                print(4)
-            if number_choice == 3:
-                print(5)
-            if number_choice == 4:
-                print(6)
-            if number_choice == 5:
-                print(7)
-            if number_choice == 6:
-                print(8)
-            if number_choice == 7:
-                print(9)
-            if number_choice == 8:
-                print(10)
-            if number_choice == 9:
-                print("J")
+            number_choice += 1
+
+            if number_choice > 10:
+                if number_choice == 11:
+                    number_choice == "J"
+                if number_choice == 12:
+                    number_choice == "Q"
+                if number_choice == 13:
+                    number_choice == "K"
+                if number_choice == 14:
+                    number_choice == "A"
+                if number_choice == 15:
+                    break
+            cd_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}  "
             if number_choice == 10:
-                print("Q")
-            if number_choice == 11:
-                print("K")
+                cd_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice} │{Colours.RESET}  "
+            else:
+                cd_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}  │{Colours.RESET}  "
+            cd_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit_logo}{Colours.BG_WHITE}{Colours.BOLD}{card_colour}sdjj │{Colours.RESET}  "
+            cd_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}  "
+
+            card_output = f"{cd_top}\n{cd_top_mid}\n{cd_bottom_mid}\n{cd_bottom}"
+
+            Confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
+            if Confirmation == 0:
+                continue
+            elif Confirmation == 1:
+                pass
+
+
+        continue
+
     
 
 #----Main Game----#
@@ -501,10 +532,3 @@ def main():
 #----Main Game----#
 
 main()
-
-'''
-rb_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}  "
-rb_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│{number}   │{Colours.RESET}  "
-rb_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit} │{Colours.RESET}  "
-rb_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}  "
-'''
