@@ -169,17 +169,17 @@ GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colo
 #----Variable----#
 
 #----Card Deck----#
-CardDeck = {}
+CardDeck = []
 
 for suit in CARD_SUITS:
     for value_card in range(2, 11):
-        CardDeck[f"{value_card}{suit}"] = value_card
+        CardDeck.append(f"{value_card}{suit}")
 
 for suit in CARD_SUITS:
-    CardDeck[f"D{suit}"] = 11
-    CardDeck[f"Q{suit}"] = 12
-    CardDeck[f"K{suit}"] = 13
-    CardDeck[f"A{suit}"] = 14
+    CardDeck.append(f"J{suit}")
+    CardDeck.append(f"Q{suit}")
+    CardDeck.append(f"K{suit}")
+    CardDeck.append(f"A{suit}")
 #----Card Deck----#
 
 #----Function Variables----#
@@ -255,6 +255,18 @@ def CLI_SW():
                     continue
         elif width >= 110 and height >= 30:
             break
+
+def card_loading(countvalue):
+    '''function that create animation'''
+    clear_screen()
+    count = 0
+    while count < countvalue:
+        LINE()
+        sys.stdout.write("Dealing card")
+        print_tw(" ...", 0.3)
+        count += 1
+        time.sleep(0.3)
+        clear_screen()
 
 #----Function Variables----#
 
@@ -446,8 +458,10 @@ def start():
 
 #----Game Function----#
 
-def game():
+def guessingcard():
     '''guessing game function'''
+    global suit_number_cards
+    global number_choice
     while True:
         suit_choice = arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", 
                 f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick the card suit {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}",
@@ -502,12 +516,19 @@ def game():
 
             confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
             if confirmation == 0:
+                GuessCard = f"{number_choice}{suit_logo}"
+                suit_number_cards.remove(number_choice)
                 return
             elif confirmation == 1:
                 break
 
+def guess_resolution():
+    '''function to check if your guess was correct'''
+    random.shuffle(CardDeck)
+    card_loading(3)
+    key_press(0)
 
-        continue
+
 #----Main Game----#
 
 def main():
@@ -517,7 +538,6 @@ def main():
     start()
     CLI_SW()
     clear_screen()
-    game()
+    guessingcard()
 #----Main Game----#
-
-main()
+guess_resolution()
