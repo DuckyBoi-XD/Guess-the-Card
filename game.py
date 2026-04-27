@@ -166,15 +166,6 @@ hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
 Confirm_Redo = ["✅ Confirm", "🔄 Redo"]
 GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}"
 
-cd_top = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}"
-cd_top_mid = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│{number}   │{Colours.RESET}"
-cd_bottom_mid = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit} │{Colours.RESET}"
-cd_bottom = None # f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}"
-
-
-
-
-
 #----Variable----#
 
 #----Card Deck----#
@@ -489,36 +480,34 @@ def game():
 
             if number_choice > 10:
                 if number_choice == 11:
-                    number_choice == "J"
+                    number_choice = "J"
                 if number_choice == 12:
-                    number_choice == "Q"
+                    number_choice = "Q"
                 if number_choice == 13:
-                    number_choice == "K"
+                    number_choice = "K"
                 if number_choice == 14:
-                    number_choice == "A"
+                    number_choice = "A"
                 if number_choice == 15:
                     break
-            cd_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭────╮{Colours.RESET}  "
+            cd_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭─────╮{Colours.RESET}  "
             if number_choice == 10:
-                cd_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice} │{Colours.RESET}  "
-            else:
                 cd_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}  │{Colours.RESET}  "
-            cd_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│  {suit_logo}{Colours.BG_WHITE}{Colours.BOLD}{card_colour}sdjj │{Colours.RESET}  "
-            cd_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰────╯{Colours.RESET}  "
+            else:
+                cd_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}   │{Colours.RESET}  "
+            cd_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│     │{Colours.RESET}  "
+            cd_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│   {suit_logo}{Colours.BG_WHITE}{Colours.BOLD}{card_colour} │{Colours.RESET}  "
+            cd_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰─────╯{Colours.RESET}  "
 
-            card_output = f"{cd_top}\n{cd_top_mid}\n{cd_bottom_mid}\n{cd_bottom}"
+            card_output = f"{cd_top}\n{cd_top_mid}\n{cd_mid}\n{cd_bottom_mid}\n{cd_bottom}"
 
-            Confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
-            if Confirmation == 0:
-                continue
-            elif Confirmation == 1:
-                pass
+            confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
+            if confirmation == 0:
+                return
+            elif confirmation == 1:
+                break
 
 
         continue
-
-    
-
 #----Main Game----#
 
 def main():
