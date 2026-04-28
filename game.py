@@ -265,7 +265,7 @@ def card_loading(countvalue):
         sys.stdout.write("Drawing card")
         print_tw(" ...", 0.3)
         count += 1
-        time.sleep(0.3)
+        time.sleep(0.2)
         clear_screen()
 
 #----Function Variables----#
@@ -277,7 +277,7 @@ def key_press(option):
         if option == 0:
             print(f"{Colours.RED}Press any key to continue{Colours.RESET}")
         elif option == 1:
-            print(f"{Colours.RED}Press any key to return to menu{Colours.RESET}")
+            print(f"{Colours.YELLOW}🔄 Press any key to play again{Colours.RESET}")
         CLI_SW()
         # Unix/Linux/macOS with termios
         fd = sys.stdin.fileno()
@@ -451,7 +451,6 @@ def start():
     print_tw(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
           f"When you successfully geuss a card, it will be removed from the deck{Colours.RESET}\n\n"
           f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'\n\n"
-          f""
           , 0.0005)
     LINE()
     key_press(0)
@@ -469,6 +468,7 @@ def guessingcard():
     global gc_mid
     global gc_bottom_mid
     global gc_bottom
+    global GuessCard
     while True:
         suit_choice = arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", 
                 f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick the card suit {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}",
@@ -497,6 +497,7 @@ def guessingcard():
             suit_logo = "ERRORRRRRRR!!!^&$#^@*$&^##*@%$@&!&@"
             suit_number_cards = "EERRROORRORO#($&@^%^&*(@*&^%$#*#))"
             card_colour = {Colours.BLACK}
+            suit_logo_track = "ERRRORRORR*&^&*(*&^%$%^&(^@@2134"
             CLI_SW()
         while True:
             number_choice = arrow_menu(GuessTheDuckTitle, 
@@ -529,25 +530,25 @@ def guessingcard():
             confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
             CLI_SW()
             if confirmation == 0:
-                GuessCard = f"{number_choice}{suit_logo}"
-                suit_number_cards.remove(number_choice)
+                GuessCard = f"{number_choice}{suit_logo_track}"
                 return
             elif confirmation == 1:
                 break
 
 def guess_resolution():
     '''function to check if your guess was correct'''
-    random.shuffle(CardDeck)
+    global GUESS_PROGRESS
     drawn_card = CardDeck[0]
+    CardDeck.remove(str(drawn_card))
     if "♠" in drawn_card or "♣" in drawn_card:
         card_colour = Colours.BLACK
     else:
         card_colour = Colours.RED
     dc_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭─────╮{Colours.RESET}"
-    if drawn_card[1] == 0:
-                dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}  │{Colours.RESET}"
+    if drawn_card[1] == 0 or len(drawn_card) == 3:
+                dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card[0]}{drawn_card[1]}  │{Colours.RESET}"
     else:
-        dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}   │{Colours.RESET}"
+        dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card[0]}   │{Colours.RESET}"
     dc_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│     │{Colours.RESET}"
     dc_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│   {drawn_card[-1]}{Colours.BG_WHITE}{Colours.BOLD}{card_colour} │{Colours.RESET}"
     dc_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰─────╯{Colours.RESET}"
@@ -558,33 +559,46 @@ def guess_resolution():
     output_bottom_mid = f"            {dc_bottom_mid} │              {gc_bottom_mid}"
     output_bottom = f"            {dc_bottom} │              {gc_bottom}"
 
-    CardOutput = f"{output_top}\n{output_top_mid}\n{output_mid}\n{output_bottom_mid}\n{output_bottom}"
+    CardOutput = f"{output_top}\n{output_top_mid}\n{output_mid}\n{output_bottom_mid}\n{output_bottom}\n"
 
-    if str(number_choice) == str(drawn_card[0]):
-        if str(drawn_card[0]) == "1":
-            if number_choice[0]:
-                pass
+    if str(GuessCard) == str(drawn_card):
+        GUESS_PROGRESS += 1
+        suit_number_cards.remove(str(number_choice))
+        guess_output_resolution = f"✅{Colours.BOLD}{Colours.GREEN}CONGRATS, you guessed correct{Colours.RESET} ✅"
 
-    card_loading(3)
+    else:
+        guess_output_resolution = f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌"
+        CardDeck.append(drawn_card)
+                
+    clear_screen()
+    card_loading(2)
     CLI_SW()
     clear_screen()
     LINE()
-    arrow_menu(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}", f"{CardOutput}\n", "one", 0)
-    key_press(0)
-
-
+    print(f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | Guess %: {GUESS_PERCENT}")
+    LINE()
+    print(CardOutput)
+    print(guess_output_resolution)
+    LINE()
+    key_press(1)
 #----Main Game----#
 
 def main():
     '''main game function'''
+    global CardDeck
+    global GUESS_PERCENT
     clear_screen()
     CLI_SW()
     start()
-    CLI_SW()
-    clear_screen()
-    guessingcard()
-    CLI_SW()
-    guess_resolution()
+    random.shuffle(CardDeck)
+    while True:
+        GUESS_PERCENT = GUESS_PROGRESS / 52
+        CLI_SW()
+        clear_screen()
+        guessingcard()
+        CLI_SW()
+        clear_screen()  
+        guess_resolution()
 
 #----Main Game----#
-guess_resolution()
+main()
