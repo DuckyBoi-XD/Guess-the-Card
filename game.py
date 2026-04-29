@@ -38,13 +38,22 @@ class Colours:
 #----Colours----#
 
 #----Precode Variables----#
-CDC0 = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) # Card Deck Completion representing none with 0
 WINS = None
-USER_NAME = None
-SCARDS = None
-CCARDS = None
-DCARDS = None
-HCARDS = None
+CARD_SUITS = ("♠", "♦", "♥", "♣")
+
+temp_CardDeck = []
+
+for suit in CARD_SUITS:
+    for value_card in range(2, 11):
+        temp_CardDeck.append(f"{value_card}{suit}")
+
+for suit in CARD_SUITS:
+    temp_CardDeck.append(f"J{suit}")
+    temp_CardDeck.append(f"Q{suit}")
+    temp_CardDeck.append(f"K{suit}")
+    temp_CardDeck.append(f"A{suit}")
+
+temp_SuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
 
 #----Save File Money----#
 
@@ -105,40 +114,43 @@ def load_game(): # access save file -JSON
             data = json.loads(json_str)
             print("Save file loaded")
             return (data.get("wins", 0),
-                    data.get("name", None),
-                    data.get("Scards", CDC0),
-                    data.get("Ccards", CDC0),
-                    data.get("Dcards", CDC0),
-                    data.get("Hcards", CDC0))
+                    data.get("carddeck", temp_CardDeck),
+                    data.get("guessamount", 0),
+                    data.get("sSuitNumbers", temp_SuitNumbers),
+                    data.get("cSuitNumbers", temp_SuitNumbers),
+                    data.get("dSuitNumbers", temp_SuitNumbers),
+                    data.get("hSuitNumbers", temp_SuitNumbers))
     except FileNotFoundError:
         print("New player - no save file found")
-        return 0, None, CDC0, CDC0, CDC0, CDC0
+        return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
     except (ValueError, json.JSONDecodeError) as error:
         print(f"Corrupted save file - using defaults. Error: {error}")
-        return 0, None, CDC0, CDC0, CDC0, CDC0
+        return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
 
-def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcards=None):
+def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=None, Dscards=None, Hscards=None):
     '''saving game data'''
     if wins is None:
         wins = WINS
-    if name is None:
-        name = USER_NAME
-    if Scards is None:
-        Scards = SCARDS
-    if Ccards is None:
-        Ccards = CCARDS
-    if Dcards is None:
-        Dcards = DCARDS
-    if Hcards is None:
-        Hcards = HCARDS
+    if carddeck is None:
+        carddeck = CARDDECK
+    if guessnumber is None:
+        guessnumber = GUESSNUMBER
+    if Sscards is None:
+        Sscards = SSCARDS
+    if Cscards is None:
+        Cscards = CSCARDS
+    if Dscards is None:
+        Dscards = DSCARDS
+    if Hscards is None:
+        Hscards = HSCARDS
 
     data = {
         "wins": wins,
-        "name": name,
-        "Scards": Scards,
-        "Ccards": Ccards,
-        "Dcards": Dcards,
-        "Hcards": Hcards,
+        "carddeck": carddeck,
+        "Scards": Sscards,
+        "Ccards": Cscards,
+        "Dcards": Dscards,
+        "Hcards": Hscards,
     }
     json_str = json.dumps(data)
     encoded_bytes = encode_save(json_str)
@@ -152,7 +164,7 @@ def save_game(wins=None, name=None, Scards=None, Ccards=None, Dcards=None, Hcard
 
 #----Variable----#
 
-WINS, USER_NAME, SCARDS, CCARDS, DCARDS, HCARDS = load_game()
+WINS, CARDDECK, GUESSNUMBER, SSCARDS, CSCARDS, DSCARDS, HSCARDS = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
 
 GUESS_PROGRESS = 0
@@ -580,6 +592,7 @@ def guess_resolution():
         guess_output_resolution = f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌\n"
         GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}" # Don't know why i need this but there is an error
         CardDeck.append(drawn_card)
+    save_game()
                 
     clear_screen()
     card_loading(2)
@@ -603,6 +616,7 @@ def main():
     global CARD_IN_DECK
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
+    load_game()
     clear_screen()
     CLI_SW()
     start()
@@ -612,6 +626,7 @@ def main():
     GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
     GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
     while True:
+        save_game()
         CLI_SW()
         clear_screen()
         guessingcard()
