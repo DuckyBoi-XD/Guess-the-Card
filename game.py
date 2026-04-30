@@ -43,6 +43,11 @@ CARD_SUITS = ("♠", "♦", "♥", "♣")
 
 temp_CardDeck = []
 
+temp_SuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "BACK"]
+
+
+#----Card Deck----#
+
 for suit in CARD_SUITS:
     for value_card in range(2, 11):
         temp_CardDeck.append(f"{value_card}{suit}")
@@ -53,7 +58,7 @@ for suit in CARD_SUITS:
     temp_CardDeck.append(f"K{suit}")
     temp_CardDeck.append(f"A{suit}")
 
-temp_SuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
+#----Card Deck----#
 
 #----Save File Money----#
 
@@ -116,10 +121,10 @@ def load_game(): # access save file -JSON
             return (data.get("wins", 0),
                     data.get("carddeck", temp_CardDeck),
                     data.get("guessamount", 0),
-                    data.get("sSuitNumbers", temp_SuitNumbers),
-                    data.get("cSuitNumbers", temp_SuitNumbers),
-                    data.get("dSuitNumbers", temp_SuitNumbers),
-                    data.get("hSuitNumbers", temp_SuitNumbers))
+                    data.get("Scards", temp_SuitNumbers),
+                    data.get("Ccards", temp_SuitNumbers),
+                    data.get("Dcards", temp_SuitNumbers),
+                    data.get("Hcards", temp_SuitNumbers))
     except FileNotFoundError:
         print("New player - no save file found")
         return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
@@ -132,21 +137,22 @@ def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=
     if wins is None:
         wins = WINS
     if carddeck is None:
-        carddeck = CARDDECK
+        carddeck = CardDeck
     if guessnumber is None:
-        guessnumber = GUESSNUMBER
+        guessnumber = GUESS_PROGRESS
     if Sscards is None:
-        Sscards = SSCARDS
+        Sscards = sSuitNumbers
     if Cscards is None:
-        Cscards = CSCARDS
+        Cscards = cSuitNumbers
     if Dscards is None:
-        Dscards = DSCARDS
+        Dscards = dSuitNumbers
     if Hscards is None:
-        Hscards = HSCARDS
+        Hscards = hSuitNumbers
 
     data = {
         "wins": wins,
         "carddeck": carddeck,
+        "guessamount" : guessnumber,
         "Scards": Sscards,
         "Ccards": Cscards,
         "Dcards": Dscards,
@@ -164,41 +170,17 @@ def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=
 
 #----Variable----#
 
-WINS, CARDDECK, GUESSNUMBER, SSCARDS, CSCARDS, DSCARDS, HSCARDS = load_game()
+WINS, CardDeck, GUESS_PROGRESS, sSuitNumbers, cSuitNumbers, dSuitNumbers, hSuitNumbers = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
-
-GUESS_PROGRESS = 0
-GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
-GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
-CARD_IN_DECK = None
-
-cardSuits = [f"{Colours.BLACK}♠ - Spades{Colours.RESET}", f"{Colours.RED}♦ - Diamonds{Colours.RESET}", f"{Colours.BLACK}♣ - Clubs{Colours.RESET}", f"{Colours.RED}♥ - Hearts{Colours.RESET}" ]
-cardNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
-sSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
-cSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
-dSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
-hSuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", f"{Colours.RED}BACK{Colours.RESET}"]
-Confirm_Redo = ["✅ Confirm", "🔄 Redo"]
-GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
-
-#----Variable----#
-
-#----Card Deck----#
-CardDeck = []
-
-for suit in CARD_SUITS:
-    for value_card in range(2, 11):
-        CardDeck.append(f"{value_card}{suit}")
-
-for suit in CARD_SUITS:
-    CardDeck.append(f"J{suit}")
-    CardDeck.append(f"Q{suit}")
-    CardDeck.append(f"K{suit}")
-    CardDeck.append(f"A{suit}")
-
 CARD_IN_DECK = len(CardDeck) # How much carss is left in the deck counter
 
-#----Card Deck----#
+GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
+GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+
+cardSuits = [f"{Colours.BLACK}♠ - Spades{Colours.RESET}", f"{Colours.RED}♦ - Diamonds{Colours.RESET}", f"{Colours.BLACK}♣ - Clubs{Colours.RESET}", f"{Colours.RED}♥ - Hearts{Colours.RESET}" ]
+Confirm_Redo = ["✅ Confirm", "🔄 Redo"]
+
+#----Variable----#
 
 #----Function Variables----#
 
@@ -285,6 +267,10 @@ def card_loading(countvalue):
         count += 1
         time.sleep(0.2)
         clear_screen()
+
+def get_title():
+    "Prev: GuessTheDuckTitle"
+    return f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
 
 #----Function Variables----#
 
@@ -488,7 +474,7 @@ def guessingcard():
     global gc_bottom
     global GuessCard
     while True:
-        suit_choice = arrow_menu(GuessTheDuckTitle, 
+        suit_choice = arrow_menu(get_title(), 
                 f"{Colours.BLACK}♠{Colours.RESET}{Colours.RED}♦{Colours.RESET} Pick the card suit {Colours.BLACK}♣{Colours.RESET}{Colours.RED}♥{Colours.RESET}",
                 cardSuits, 0)
         if suit_choice == 0:
@@ -514,11 +500,11 @@ def guessingcard():
         else:
             suit_logo = "ERRORRRRRRR!!!^&$#^@*$&^##*@%$@&!&@"
             suit_number_cards = "EERRROORRORO#($&@^%^&*(@*&^%$#*#))"
-            card_colour = {Colours.BLACK}
+            card_colour = Colours.BLACK
             suit_logo_track = "ERRRORRORR*&^&*(*&^%$%^&(^@@2134"
             CLI_SW()
         while True:
-            number_choice = arrow_menu(GuessTheDuckTitle, 
+            number_choice = arrow_menu(get_title(), 
                 f"{suit_logo} Pick the card value {suit_logo}",
                 suit_number_cards, 1)
             
@@ -528,7 +514,7 @@ def guessingcard():
                 break
 
             gc_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭─────╮{Colours.RESET}"
-            if number_choice == 10:
+            if number_choice == "10":
                 gc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}  │{Colours.RESET}"
             else:
                 gc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {number_choice}   │{Colours.RESET}"
@@ -538,7 +524,7 @@ def guessingcard():
 
             card_output = f"{gc_top}\n{gc_top_mid}\n{gc_mid}\n{gc_bottom_mid}\n{gc_bottom}"
 
-            confirmation = arrow_menu(GuessTheDuckTitle, f"You chose:\n{card_output}", Confirm_Redo, 0 )
+            confirmation = arrow_menu(get_title(), f"You chose:\n{card_output}", Confirm_Redo, 0 )
             CLI_SW()
             if confirmation == 0:
                 GuessCard = f"{number_choice}{suit_logo_track}"
@@ -551,24 +537,28 @@ def guess_resolution():
     global GUESS_PROGRESS
     global GUESS_DECK_PERCENT
     global CARD_IN_DECK
-    global GuessTheDuckTitle
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
+    global WINS
+    global CardDeck
+    global suit_number_cards
 
 
     drawn_card = CardDeck[0]
-    CardDeck.remove(str(drawn_card))
     if "♠" in drawn_card or "♣" in drawn_card:
         card_colour = Colours.BLACK
     else:
         card_colour = Colours.RED
+    
+    drawn_card_rank = drawn_card[:-1] # Everything but last character
+    drawn_card_suit = drawn_card[-1] # last character (suit
     dc_top = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╭─────╮{Colours.RESET}"
-    if drawn_card[1] == 0 or len(drawn_card) == 3:
-                dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card[0]}{drawn_card[1]}  │{Colours.RESET}"
+    if len(drawn_card_rank) == 2:
+        dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card_rank}  │{Colours.RESET}"
     else:
-        dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card[0]}   │{Colours.RESET}"
+        dc_top_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│ {drawn_card_rank}   │{Colours.RESET}"
     dc_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│     │{Colours.RESET}"
-    dc_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│   {drawn_card[-1]}{Colours.BG_WHITE}{Colours.BOLD}{card_colour} │{Colours.RESET}"
+    dc_bottom_mid = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}│   {drawn_card_suit}{Colours.BG_WHITE}{Colours.BOLD}{card_colour} │{Colours.RESET}"
     dc_bottom = f"{Colours.BG_WHITE}{Colours.BOLD}{card_colour}╰─────╯{Colours.RESET}"
 
     output_top = f"Card Drawn: {dc_top} │ Card Picked: {gc_top}"
@@ -581,38 +571,35 @@ def guess_resolution():
 
     if str(GuessCard) == str(drawn_card):
         GUESS_PROGRESS += 1
+        GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
+        CardDeck.remove(str(drawn_card))
         suit_number_cards.remove(str(number_choice))
         GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
         CARD_IN_DECK = len(CardDeck)
-        GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
-        GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
-        GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
+
         guess_output_resolution = f"✅{Colours.BOLD}{Colours.GREEN}CONGRATS, you guessed correct{Colours.RESET} ✅\n"
     else:
         guess_output_resolution = f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌\n"
-        GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}" # Don't know why i need this but there is an error
-        CardDeck.append(drawn_card)
-    save_game()
                 
     clear_screen()
     card_loading(2)
     CLI_SW()
     clear_screen()
     LINE()
-    print(GuessTheDuckTitle)
+    print(get_title())
     LINE()
     print(CardOutput)
     print(guess_output_resolution)
     print(CardDeck) # debug
     print(CARD_IN_DECK) # debug
     LINE()
+    save_game()
     key_press(1)
 #----Main Game----#
 
 def main():
     '''main game function'''
     global CardDeck
-    global GuessTheDuckTitle
     global CARD_IN_DECK
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
@@ -621,12 +608,10 @@ def main():
     CLI_SW()
     start()
     random.shuffle(CardDeck)
-    GuessTheDuckTitle = f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
     CARD_IN_DECK = len(CardDeck)
     GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
     GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
     while True:
-        save_game()
         CLI_SW()
         clear_screen()
         guessingcard()
