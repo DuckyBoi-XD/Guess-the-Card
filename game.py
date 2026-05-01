@@ -433,6 +433,7 @@ def arrow_menu(title, text, options, menu_orientation):
 #----Win Condition----#
 
 def win_condition():
+    "Check if you won (not checked if work)"
     if len(CardDeck) == 0:
         return 1
     else:
