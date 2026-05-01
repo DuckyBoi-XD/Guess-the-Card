@@ -38,7 +38,6 @@ class Colours:
 #----Colours----#
 
 #----Precode Variables----#
-WINS = None
 CARD_SUITS = ("♠", "♦", "♥", "♣")
 
 temp_CardDeck = []
@@ -118,7 +117,7 @@ def load_game(): # access save file -JSON
             json_str = decode_save(encoded_bytes)
             data = json.loads(json_str)
             print("Save file loaded")
-            return (data.get("wins", 0),
+            return (data.get("deckscomplete", 0),
                     data.get("carddeck", temp_CardDeck),
                     data.get("guessamount", 0),
                     data.get("Scards", temp_SuitNumbers),
@@ -132,10 +131,10 @@ def load_game(): # access save file -JSON
         print(f"Corrupted save file - using defaults. Error: {error}")
         return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
 
-def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=None, Dscards=None, Hscards=None):
+def save_game(deckscomplete=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=None, Dscards=None, Hscards=None):
     '''saving game data'''
-    if wins is None:
-        wins = WINS
+    if deckscomplete is None:
+        deckscomplete = DECKS_COMPLETE
     if carddeck is None:
         carddeck = CardDeck
     if guessnumber is None:
@@ -150,7 +149,7 @@ def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=
         Hscards = hSuitNumbers
 
     data = {
-        "wins": wins,
+        "deckscomplete": deckscomplete,
         "carddeck": carddeck,
         "guessamount" : guessnumber,
         "Scards": Sscards,
@@ -170,9 +169,10 @@ def save_game(wins=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=
 
 #----Variable----#
 
-WINS, CardDeck, GUESS_PROGRESS, sSuitNumbers, cSuitNumbers, dSuitNumbers, hSuitNumbers = load_game()
+DECKS_COMPLETE, CardDeck, GUESS_PROGRESS, sSuitNumbers, cSuitNumbers, dSuitNumbers, hSuitNumbers = load_game()
 CARD_SUITS = ("♠", "♦", "♥", "♣")
 CARD_IN_DECK = len(CardDeck) # How much carss is left in the deck counter
+space_temp = None
 
 GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
 GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
@@ -270,7 +270,7 @@ def card_loading(countvalue):
 
 def get_title():
     "Prev: GuessTheDuckTitle"
-    return f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Wins: {WINS} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
+    return f"{Colours.CYAN}{Colours.BOLD}❓ Guess The Duck 🃏\n{Colours.YELLOW}Decks Completed: {DECKS_COMPLETE} | % of Deck Guessed: {GUESS_DECK_PERCENT}% | Amount of card left : {CARD_IN_DECK}"
 
 #----Function Variables----#
 
@@ -281,7 +281,9 @@ def key_press(option):
         if option == 0:
             print(f"{Colours.RED}Press any key to continue{Colours.RESET}")
         elif option == 1:
-            print(f"{Colours.YELLOW}🔄 Press any key to play again{Colours.RESET}")
+            print(f"{Colours.YELLOW}🔄 Press any key to guess another card{Colours.RESET}")
+        elif option == 2:
+            print(f"{Colours.YELLOW}🔄 Press any key to start another deck{Colours.RESET}")
         CLI_SW()
         # Unix/Linux/macOS with termios
         fd = sys.stdin.fileno()
@@ -334,6 +336,7 @@ def arrow_key():
 def arrow_menu(title, text, options, menu_orientation):
     """generic arrow key menu system"""
     try:
+        global space_temp
         card_numbers_menu = "|"
         selected = 0
         arrow_space = None
@@ -368,9 +371,10 @@ def arrow_menu(title, text, options, menu_orientation):
 
                     if i == selected:
                         card_number = f" {Colours.RESET}{Colours.YELLOW}{option}{Colours.RESET} |"
-                    if selected == 10:
+                        space_temp = option
+                    if space_temp == "10":
                         arrow_space = " " * (selected * 4 - 1)
-                    elif selected > 10:
+                    elif space_temp == "J" or space_temp == "Q" or space_temp == "K" or space_temp == "A" or "BACK" in space_temp:
                         arrow_space = " " * ((selected - 1) * 4 - 2 + (1 * 4 + 1))
                     else:
                         arrow_space = " " * (selected * 4 - 2)
@@ -425,6 +429,16 @@ def arrow_menu(title, text, options, menu_orientation):
         sys.exit()
 
 #----Arrow Key Menu System----#
+
+#----Win Condition----#
+
+def win_condition():
+    if len(CardDeck) == 0:
+        return 1
+    else:
+        return 0
+
+#----Win Condition----#
 
 #------------------------------------#
 #============GAME FUNCTIONS==========#
@@ -539,7 +553,6 @@ def guess_resolution():
     global CARD_IN_DECK
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
-    global WINS
     global CardDeck
     global suit_number_cards
 
@@ -580,7 +593,33 @@ def guess_resolution():
         guess_output_resolution = f"✅{Colours.BOLD}{Colours.GREEN}CONGRATS, you guessed correct{Colours.RESET} ✅\n"
     else:
         guess_output_resolution = f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌\n"
-                
+    
+
+    def end_output():
+        global DECKS_COMPLETE
+        global CardDeck
+        global CARD_IN_DECK
+        global GUESS_DECK_NUMBER
+        global GUESS_DECK_PERCENT
+        global end_output
+        result = win_condition()
+        if result == 1:
+            DECKS_COMPLETE += 1
+            CardDeck = temp_CardDeck
+            random.shuffle(CardDeck)
+            CARD_IN_DECK = len(CardDeck)
+            GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
+            GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+            end_output = f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉"
+            LINE()
+            save_game()
+            key_press(2)
+
+        else:
+            LINE()
+            save_game()
+            key_press(1)
+           
     clear_screen()
     card_loading(2)
     CLI_SW()
@@ -592,9 +631,8 @@ def guess_resolution():
     print(guess_output_resolution)
     print(CardDeck) # debug
     print(CARD_IN_DECK) # debug
-    LINE()
-    save_game()
-    key_press(1)
+    end_output()
+
 #----Main Game----#
 
 def main():
