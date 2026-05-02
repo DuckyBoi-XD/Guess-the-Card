@@ -41,6 +41,8 @@ class Colours:
 CARD_SUITS = ("♠", "♦", "♥", "♣")
 
 temp_CardDeck = []
+CardDeck = None
+savefile_value = 0
 
 temp_SuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "BACK"]
 
@@ -109,6 +111,7 @@ def get_config_dir():
 
 def load_game(): # access save file -JSON
     '''loading save file - returns both money and name'''
+    global savefile_value
     config_dir = get_config_dir()
     save_path = os.path.join(config_dir, "Guess-the-Duck.bin")
     try:
@@ -116,7 +119,7 @@ def load_game(): # access save file -JSON
             encoded_bytes = f.read()
             json_str = decode_save(encoded_bytes)
             data = json.loads(json_str)
-            print("Save file loaded")
+            savefile_value = 1
             return (data.get("deckscomplete", 0),
                     data.get("carddeck", temp_CardDeck),
                     data.get("guessamount", 0),
@@ -126,9 +129,11 @@ def load_game(): # access save file -JSON
                     data.get("Hcards", temp_SuitNumbers))
     except FileNotFoundError:
         print("New player - no save file found")
+        savefile_value = 2
         return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
     except (ValueError, json.JSONDecodeError) as error:
         print(f"Corrupted save file - using defaults. Error: {error}")
+        savefile_value = 3
         return 0, temp_CardDeck, 0, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers, temp_SuitNumbers
 
 def save_game(deckscomplete=None, carddeck=None, guessnumber=None, Sscards=None, Cscards=None, Dscards=None, Hscards=None):
@@ -263,7 +268,7 @@ def card_loading(countvalue):
     while count < countvalue:
         LINE()
         sys.stdout.write("Drawing card")
-        print_tw(" ...", 0.3)
+        print_tw(" ...", 0.2)
         count += 1
         time.sleep(0.2)
         clear_screen()
@@ -367,15 +372,22 @@ def arrow_menu(title, text, options, menu_orientation):
                     menu_orientation_selection = True
                 card_numbers_menu = "|"
                 for i, option in enumerate(options, start=1):
-                    card_number = f" {option} |"
+                    if option == "BACK":
+                        card_number = f" {Colours.RED}{option}{Colours.RESET} |"
+                    else:
+                        card_number = f" {option} |"
 
                     if i == selected:
                         card_number = f" {Colours.RESET}{Colours.YELLOW}{option}{Colours.RESET} |"
                         space_temp = option
                     if space_temp == "10":
                         arrow_space = " " * (selected * 4 - 1)
-                    elif space_temp == "J" or space_temp == "Q" or space_temp == "K" or space_temp == "A" or "BACK" in space_temp:
-                        arrow_space = " " * ((selected - 1) * 4 - 2 + (1 * 4 + 1))
+                    
+                    elif "10" in options:
+                            if space_temp == "J" or space_temp == "Q" or space_temp == "K" or space_temp == "A" or "BACK" in space_temp:
+                                arrow_space = " " * ((selected - 1) * 4 - 2 + (1 * 4 + 1))
+                            else:
+                                arrow_space = " " * (selected * 4 - 2)
                     else:
                         arrow_space = " " * (selected * 4 - 2)
                         
@@ -469,8 +481,16 @@ def start():
 
     print_tw(f"{Colours.BOLD}{Colours.YELLOW}A CLI Python game about guessing every single card in a regular playing card deck.\n"
           f"When you successfully geuss a card, it will be removed from the deck{Colours.RESET}\n\n"
-          f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'\n\n"
+          f"No, you are not guessing ducks. Yes, the title is misleading\nI just like ducks and I name every project with 'duck'\n"
           , 0.0005)
+    if savefile_value == 0:
+        print(f"{Colours.RED}ERRROR=UNASSIGNED SAVEFILE VALUE{Colours.RESET}")
+    elif savefile_value == 1:
+        print(f"{Colours.GREEN}Save File Loaded{Colours.RESET}")
+    elif savefile_value == 2:
+        print(f"{Colours.YELLOW}No Save File Loaded - Creating New Save File{Colours.RESET}")
+    elif savefile_value == 3:
+        print(f"{Colours.RED}Save File Corrupted - Creating New Save File{Colours.RESET}")
     LINE()
     key_press(0)
 
@@ -556,6 +576,10 @@ def guess_resolution():
     global GUESS_DECK_PERCENT
     global CardDeck
     global suit_number_cards
+    global sSuitNumbers
+    global cSuitNumbers
+    global dSuitNumbers
+    global hSuitNumbers
 
 
     drawn_card = CardDeck[0]
@@ -583,43 +607,6 @@ def guess_resolution():
 
     CardOutput = f"{output_top}\n{output_top_mid}\n{output_mid}\n{output_bottom_mid}\n{output_bottom}\n"
 
-    if str(GuessCard) == str(drawn_card):
-        GUESS_PROGRESS += 1
-        GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
-        CardDeck.remove(str(drawn_card))
-        suit_number_cards.remove(str(number_choice))
-        GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
-        CARD_IN_DECK = len(CardDeck)
-
-        guess_output_resolution = f"✅{Colours.BOLD}{Colours.GREEN}CONGRATS, you guessed correct{Colours.RESET} ✅\n"
-    else:
-        guess_output_resolution = f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌\n"
-    
-
-    def end_output():
-        global DECKS_COMPLETE
-        global CardDeck
-        global CARD_IN_DECK
-        global GUESS_DECK_NUMBER
-        global GUESS_DECK_PERCENT
-        global end_output
-        result = win_condition()
-        if result == 1:
-            DECKS_COMPLETE += 1
-            CardDeck = temp_CardDeck
-            random.shuffle(CardDeck)
-            CARD_IN_DECK = len(CardDeck)
-            GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
-            GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
-            end_output = f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉"
-            LINE()
-            save_game()
-            key_press(2)
-
-        else:
-            LINE()
-            save_game()
-            key_press(1)
            
     clear_screen()
     card_loading(2)
@@ -629,10 +616,44 @@ def guess_resolution():
     print(get_title())
     LINE()
     print(CardOutput)
-    print(guess_output_resolution)
-    print(CardDeck) # debug
-    print(CARD_IN_DECK) # debug
-    end_output()
+    result = win_condition()
+    if result == 1:
+        DECKS_COMPLETE += 1
+        CardDeck = temp_CardDeck
+        random.shuffle(CardDeck)
+        CARD_IN_DECK = len(CardDeck)
+        GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
+        GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+        sSuitNumbers = temp_SuitNumbers
+        cSuitNumbers = temp_SuitNumbers
+        dSuitNumbers = temp_SuitNumbers
+        hSuitNumbers = temp_SuitNumbers
+        print(f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉")
+        print(CardDeck) # debug
+        LINE()
+        save_game()
+        key_press(2)
+
+    else:
+        if str(GuessCard) == str(drawn_card):
+            GUESS_PROGRESS += 1
+            GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
+            CardDeck.remove(str(drawn_card))
+            suit_number_cards.remove(str(number_choice))
+            GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+            CARD_IN_DECK = len(CardDeck)
+            print(f"✅{Colours.BOLD}{Colours.GREEN}CONGRATS, you guessed correct{Colours.RESET} ✅")
+            print(CardDeck) # debug
+            LINE()
+            save_game()
+            key_press(1)
+
+        else:
+            print(f"❌ {Colours.RED}{Colours.BOLD}Sorry, but you guessed wrong{Colours.RESET} ❌")
+            print(CardDeck) # debug
+            LINE()
+            save_game()
+            key_press(1)
 
 #----Main Game----#
 
@@ -650,6 +671,7 @@ def main():
     CARD_IN_DECK = len(CardDeck)
     GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
     GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+    save_game()
     while True:
         CLI_SW()
         clear_screen()
