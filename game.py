@@ -45,9 +45,6 @@ CardDeck = None
 savefile_value = 0
 
 temp_SuitNumbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "BACK"]
-win_SuitNumbers = ["2"] # Debug
-win_CardDeck = ["2♠", "2♦", "2♥", "2♣"] # Debug
-
 
 #----Card Deck----#
 
@@ -177,6 +174,11 @@ def save_game(deckscomplete=None, carddeck=None, guessnumber=None, Sscards=None,
 #----Variable----#
 
 DECKS_COMPLETE, CardDeck, GUESS_PROGRESS, sSuitNumbers, cSuitNumbers, dSuitNumbers, hSuitNumbers = load_game()
+if savefile_value == 1:
+    pass
+elif savefile_value == 2 or savefile_value == 3:
+    random.shuffle(CardDeck)
+
 CARD_SUITS = ("♠", "♦", "♥", "♣")
 CARD_IN_DECK = len(CardDeck) # How much carss is left in the deck counter
 space_temp = None
@@ -561,7 +563,6 @@ def guessingcard():
 def guess_resolution():
     '''function to check if your guess was correct'''
     global GUESS_PROGRESS
-    global GUESS_DECK_PERCENT
     global CARD_IN_DECK
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
@@ -599,16 +600,6 @@ def guess_resolution():
 
     CardOutput = f"{output_top}\n{output_top_mid}\n{output_mid}\n{output_bottom_mid}\n{output_bottom}\n"
 
-           
-    clear_screen()
-    card_loading(2)
-    CLI_SW()
-    clear_screen()
-    LINE()
-    print(get_title())
-    LINE()
-    print(CardOutput)
-
     if str(GuessCard) == str(drawn_card):
         GUESS_PROGRESS += 1
         GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
@@ -625,6 +616,20 @@ def guess_resolution():
 
     if len(CardDeck) == 0:
         keypress_value = 2
+        output_print = f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉"
+    clear_screen()
+    card_loading(2)
+    CLI_SW()
+    clear_screen()
+    LINE()
+    print(get_title())
+    LINE()
+    print(CardOutput)
+    print(output_print)
+    LINE()
+    save_game()
+    key_press(keypress_value)
+    if len(CardDeck) == 0:
         DECKS_COMPLETE += 1
         CardDeck = temp_CardDeck.copy()
         random.shuffle(CardDeck)
@@ -636,37 +641,19 @@ def guess_resolution():
         cSuitNumbers = temp_SuitNumbers.copy()
         dSuitNumbers = temp_SuitNumbers.copy()
         hSuitNumbers = temp_SuitNumbers.copy()
-        output_print = f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉"
-
-    print(output_print)
-    print(CardDeck) # debug
-    LINE()
-    save_game()
-    key_press(keypress_value)
 #----Main Game----#
 
 def main():
     '''main game function'''
-    global CardDeck
     global CARD_IN_DECK
     global GUESS_DECK_NUMBER
     global GUESS_DECK_PERCENT
-    global sSuitNumbers # Debug
-    global cSuitNumbers
-    global dSuitNumbers
-    global hSuitNumbers
     clear_screen()
     CLI_SW()
     start()
-    random.shuffle(CardDeck)
     CARD_IN_DECK = len(CardDeck)
     GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
     GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
-    sSuitNumbers = win_SuitNumbers.copy() # Debug
-    cSuitNumbers = win_SuitNumbers.copy()
-    dSuitNumbers = win_SuitNumbers.copy()
-    hSuitNumbers = win_SuitNumbers.copy()
-    CardDeck = win_CardDeck.copy()
     save_game()
     while True:
         CLI_SW()
