@@ -12,7 +12,7 @@ This project is called Guess the Duck, which is a CLI Python card game where you
 
 ## Images
 
-<img alt="Title Image" src="assets\title.png" />
+<img alt="Title Image" src="assets/Title.png" />
 <img alt="Arrow Menu Example 1" src="assets/ArrowMenufull.png">
 <img alt="Arrow Menu Example 2" src="assets/ArrowMenu1.png">
 <img alt="Regular Round" src="assets/RegularRound.png">
