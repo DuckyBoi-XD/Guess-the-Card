@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: Guess_The_Duck_Duckyboi_XD
+Version: 0.1.0.dev34
+Summary: A CLI python-made game where you need to guess every card in a playing deck
+Author-email: Braeden Sy Tan <braedenjairsytan@icloud.com>
+License-Expression: GPL-3.0-or-later
+Project-URL: Homepage, https://github.com/DuckyBoi-XD/Guess-the-Duck
+Project-URL: Issues, https://github.com/DuckyBoi-XD/Guess-the-Duck/issues
+Keywords: game,cards,gambling,terminal
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Guess The Duck
+
+This project is called Guess the Duck, which is a CLI Python card game where you need to guess every single card in the regular playing card deck.
+
+## Features
+
+- Save File: A funtion where when exiting out of the terminal window, the game automatically saves the progress of the game (Deck's Completed, Correct Guesses in th Deck, Cards Removed from the Deck, etc)
+- CLI: The game runs on the Command Line Interface which presents a easy to use, and global platform.
+- ASCII: This game uses ASCII art to create the image of the cards and title screen.
+- ANSI escape codes: The game includes and uses ANSI escape codes which creates colour and bokldness
+- Pypi: This game uses Pypi which makes the game easier to access and run.
+
+## Images
+
+<img alt="Title Image" src="assets/Title.png" />
+<img alt="Options Image" src="assets/Options.png">
+<img alt="Arrow Menu Example 1" src="assets/ArrowMenufull.png">
+<img alt="Arrow Menu Example 2" src="assets/ArrowMenu1.png">
+<img alt="Regular Round" src="assets/RegularRound.png">
+
+## How to Access/Play
+
+## How the Game Works
+
+The aim of the game is to guess every single card in a regular playing card deck.
+
+1. When entering into the game you will encounter a title screen. When any key is pressed, you'll be given options for a suit, this will represent the suit of the card you will pick.
+
+2. After chosing the suit, you will be given the option to pick the card value of card you are guessing.
+
+3. Then, once confirming the card, the game will (after shuffling the deck) draw the top card of the deck. This is the card that has to match the card your card. there will be 2 outcomes.
+    1. If the card you guessed is not the same as the card on the top of the deck, the drawn card will be place on the bottom of the deck and you will process to guess again
+    2. If the card you guessed is the same as the card on the top of the deck, the drawn card will be removed from the deck as well as the option to pick that card. The stats will also increase showing you how much card you have successfully guessed from the deck.
+4. When successfully guessing the card, 2 things will also happen.
+    1. If there is still cards in the deck, you will have to keep guessing cards.
+    2. If there is no more cards in the deck, you've successfully guessed an entire deck of playing cards. Your win counter will increase and you will be given the option to press any key to start another deck.
+5. Rince and Repeat.
+
+## Notes
+
+This game is exteremly challenging and compared to my past games, it's really difficult to guess even one entire deck.
+
+This game is called Guess The Duck, but by now you can probarly tell that it's not guessing ducks but guessing cards.

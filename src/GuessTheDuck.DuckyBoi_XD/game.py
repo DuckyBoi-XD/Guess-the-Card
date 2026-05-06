@@ -664,4 +664,5 @@ def main():
         guess_resolution()
 
 #----Main Game----#
-main()
+if __name__ == "__main__":
+    main()

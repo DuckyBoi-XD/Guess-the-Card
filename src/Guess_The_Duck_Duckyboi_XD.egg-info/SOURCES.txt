@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+assets/ArrowMenu1.png
+assets/ArrowMenufull.png
+assets/Options.png
+assets/RegularRound.png
+assets/Title.png
+src/Guess_The_Duck_Duckyboi_XD.egg-info/PKG-INFO
+src/Guess_The_Duck_Duckyboi_XD.egg-info/SOURCES.txt
+src/Guess_The_Duck_Duckyboi_XD.egg-info/dependency_links.txt
+src/Guess_The_Duck_Duckyboi_XD.egg-info/top_level.txt

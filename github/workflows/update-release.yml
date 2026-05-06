@@ -1,0 +1,71 @@
+name: Update Version on Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Release tag name (for manual run)
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set tag name variable
+        run: |
+          if [ -n "${{ github.event.release.tag_name }}" ]; then
+            TAG_NAME="${{ github.event.release.tag_name }}"
+          elif [ -n "${{ github.event.inputs.tag_name }}" ]; then
+            TAG_NAME="${{ github.event.inputs.tag_name }}"
+          else
+            echo "No tag name provided (release or workflow_dispatch input)." >&2
+            exit 1
+          fi
+
+          VERSION_NUM=$(echo "$TAG_NAME" | sed 's/^v//')
+          echo "VERSION_NUM=$VERSION_NUM" >> $GITHUB_ENV
+          echo "Using tag: $TAG_NAME, version: $VERSION_NUM"
+
+      - name: Update __version__ in package __init__.py
+        run: |
+          INIT_FILE="src/GuessTheDuck.DuckyBoi_XD/__init__.py"
+
+          if [ ! -f "$INIT_FILE" ]; then
+            echo "Expected package init file not found: $INIT_FILE" >&2
+            echo "src tree:" >&2
+            ls -la src || true
+            exit 1
+          fi
+
+          if grep -qE '^__version__\s*=\s*' "$INIT_FILE"; then
+            sed -i -E "s/^__version__\s*=\s*.*/__version__ = \"$VERSION_NUM\"/" "$INIT_FILE"
+          else
+            printf "__version__ = \"%s\"\n" "$VERSION_NUM" >> "$INIT_FILE"
+          fi
+
+          echo "Updated $INIT_FILE with __version__=$VERSION_NUM"
+
+      - name: Verify changes
+        run: |
+          echo "=== package __init__.py ==="
+          cat src/GuessTheDuck.DuckyBoi_XD/__init__.py
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(release): set __version__ to ${{ env.VERSION_NUM }} [skip ci]"
+          file_pattern: src/GuessTheDuck.DuckyBoi_XD/__init__.py
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
+          branch: main

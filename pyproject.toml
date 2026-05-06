@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools >= 77.0.3", "wheel", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Guess_The_Duck_Duckyboi_XD"
+dynamic = ["version"]
+authors = [{name = "Braeden Sy Tan", email = "braedenjairsytan@icloud.com"}]
+description = "A CLI python-made game where you need to guess every card in a playing deck"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["game", "cards", "gambling", "terminal"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/DuckyBoi-XD/Guess-the-Duck"
+Issues = "https://github.com/DuckyBoi-XD/Guess-the-Duck/issues"
+
+[tool.setuptools_scm]
+version_scheme = "release-branch-semver"
+local_scheme = "no-local-version"
+tag_regex = "^(?:v)?(?P<version>\\d+\\.\\d+\\.\\d+)$"
