@@ -28,6 +28,16 @@ playguess-the-duck = "guess_the_duck.game:main"
 playGTD = "guess_the_duck.game:main"
 play-GTD = "guess_the_duck.game:main"
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = [
+  "guess_the_duck*",
+  "GuessTheDuck.DuckyBoi_XD*",
+]
+
 [tool.setuptools_scm]
 version_scheme = "release-branch-semver"
 local_scheme = "no-local-version"
