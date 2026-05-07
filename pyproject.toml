@@ -3,7 +3,7 @@ requires = ["setuptools >= 77.0.3", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "Guess_The_Duck_Duckyboi_XD"
+name = "guess-the-duck"
 dynamic = ["version"]
 authors = [{name = "Braeden Sy Tan", email = "braedenjairsytan@icloud.com"}]
 description = "A CLI python-made game where you need to guess every card in a playing deck"
