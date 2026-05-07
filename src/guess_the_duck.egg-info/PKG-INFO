@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: guess-the-duck
-Version: 0.2.0.dev0
+Version: 0.3.0.dev0
 Summary: A CLI python-made game where you need to guess every card in a playing deck
 Author-email: Braeden Sy Tan <braedenjairsytan@icloud.com>
 License-Expression: GPL-3.0-or-later

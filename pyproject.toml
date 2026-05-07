@@ -22,11 +22,11 @@ Homepage = "https://github.com/DuckyBoi-XD/Guess-the-Duck"
 Issues = "https://github.com/DuckyBoi-XD/Guess-the-Duck/issues"
 
 [project.scripts]
-guess-the-duck = "GuessTheDuck.DuckyBoi_XD.game:main"
-GTD = "GuessTheDuck.DuckyBoi_XD.game:main"
-playguess-the-duck = "GuessTheDuck.DuckyBoi_XD.game:main"
-playGTD = "GuessTheDuck.DuckyBoi_XD.game:main"
-play-GTD = "GuessTheDuck.DuckyBoi_XD.game:main"
+guess-the-duck = "guess_the_duck.game:main"
+GTD = "guess_the_duck.game:main"
+playguess-the-duck = "guess_the_duck.game:main"
+playGTD = "guess_the_duck.game:main"
+play-GTD = "guess_the_duck.game:main"
 
 [tool.setuptools_scm]
 version_scheme = "release-branch-semver"

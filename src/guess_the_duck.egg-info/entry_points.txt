@@ -1,6 +1,6 @@
 [console_scripts]
-GTD = GuessTheDuck.DuckyBoi_XD.game:main
-guess-the-duck = GuessTheDuck.DuckyBoi_XD.game:main
-play-GTD = GuessTheDuck.DuckyBoi_XD.game:main
-playGTD = GuessTheDuck.DuckyBoi_XD.game:main
-playguess-the-duck = GuessTheDuck.DuckyBoi_XD.game:main
+GTD = guess_the_duck.game:main
+guess-the-duck = guess_the_duck.game:main
+play-GTD = guess_the_duck.game:main
+playGTD = guess_the_duck.game:main
+playguess-the-duck = guess_the_duck.game:main

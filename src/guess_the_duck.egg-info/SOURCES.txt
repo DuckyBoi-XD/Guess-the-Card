@@ -8,8 +8,6 @@ assets/ArrowMenufull.png
 assets/Options.png
 assets/RegularRound.png
 assets/Title.png
-dist/guess_the_duck_duckyboi_xd-0.1.0.dev34-py3-none-any.whl
-dist/guess_the_duck_duckyboi_xd-0.1.0.dev34.tar.gz
 github/workflows/publish-pypi.yml
 github/workflows/update-release.yml
 src/GuessTheDuck.DuckyBoi_XD/__init__.py
@@ -19,6 +17,8 @@ src/Guess_The_Duck_Duckyboi_XD.egg-info/PKG-INFO
 src/Guess_The_Duck_Duckyboi_XD.egg-info/SOURCES.txt
 src/Guess_The_Duck_Duckyboi_XD.egg-info/dependency_links.txt
 src/Guess_The_Duck_Duckyboi_XD.egg-info/top_level.txt
+src/guess_the_duck/__init__.py
+src/guess_the_duck/game.py
 src/guess_the_duck.egg-info/PKG-INFO
 src/guess_the_duck.egg-info/SOURCES.txt
 src/guess_the_duck.egg-info/dependency_links.txt
