@@ -21,6 +21,13 @@ license-files = ["LICENSE"]
 Homepage = "https://github.com/DuckyBoi-XD/Guess-the-Duck"
 Issues = "https://github.com/DuckyBoi-XD/Guess-the-Duck/issues"
 
+[project.scripts]
+guess-the-duck = "GuessTheDuck.DuckyBoi_XD.game:main"
+GTD = "GuessTheDuck.DuckyBoi_XD.game:main"
+playguess-the-duck = "GuessTheDuck.DuckyBoi_XD.game:main"
+playGTD = "GuessTheDuck.DuckyBoi_XD.game:main"
+play-GTD
+
 [tool.setuptools_scm]
 version_scheme = "release-branch-semver"
 local_scheme = "no-local-version"
