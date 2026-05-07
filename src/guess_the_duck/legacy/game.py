@@ -9,7 +9,6 @@ NOTE: Keep this file in sync with `src/GuessTheDuck.DuckyBoi_XD/game.py`.
 from __future__ import annotations
 
 # The actual game code is maintained in the original module.
-# For development checkouts, importing it directly is fine.
-# For installed wheels, this file provides a stable import target.
+# We import it via an absolute import so this works when installed.
 
-from ...GuessTheDuck.DuckyBoi_XD.game import *  # type: ignore
+from GuessTheDuck.DuckyBoi_XD.game import *  # type: ignore
