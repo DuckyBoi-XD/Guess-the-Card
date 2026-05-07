@@ -33,14 +33,15 @@ jobs:
           rm -rf dist build *.egg-info
 
       - name: Build release distributions
-        env:
-          # Ensure the version comes from the release tag (e.g. v0.5.0 -> 0.5.0)
-          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ github.ref_name }}
         run: |
           # NOTE: put your own distribution build steps here.
           python -m pip install --upgrade pip
           python -m pip install build
-          python -m build
+
+          # Force the version to match the release tag (vX.Y.Z -> X.Y.Z)
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Building version: ${VERSION} (from tag ${GITHUB_REF_NAME})"
+          SETUPTOOLS_SCM_PRETEND_VERSION="${VERSION}" python -m build
 
       - name: Assert exactly one version built (safety check)
         run: |
@@ -48,15 +49,22 @@ jobs:
           from pathlib import Path
           import re
 
-          # Expect one version across all dist files (wheel+sdist).
           versions = set()
-          for p in Path('dist').glob('guess_the_duck-*'):
-            m = re.match(r"guess_the_duck-([0-9][^-/]*)", p.name)
-            if m:
-              versions.add(m.group(1))
+          for p in Path('dist').iterdir():
+            name = p.name
+            if not name.startswith('guess_the_duck-'):
+              continue
+
+            # Match wheel and sdist filenames and capture the version only.
+            m = re.match(r"^guess_the_duck-(?P<ver>.+?)(?:-py\d+-none-any\.whl|\.tar\.gz)$", name)
+            if not m:
+              raise SystemExit(f"Unrecognized dist filename: {name}")
+            versions.add(m.group('ver'))
+
           if len(versions) != 1:
             raise SystemExit(f"Expected exactly 1 version in dist/, found: {sorted(versions)}")
-          print("dist/ versions:", sorted(versions))
+
+          print("dist/ version:", next(iter(versions)))
           PY
 
       - name: Upload distributions
