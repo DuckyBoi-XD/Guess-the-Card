@@ -21,16 +21,43 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
+      - name: Clean old build artifacts
+        run: |
+          rm -rf dist build *.egg-info
+
       - name: Build release distributions
+        env:
+          # Ensure the version comes from the release tag (e.g. v0.5.0 -> 0.5.0)
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ github.ref_name }}
         run: |
           # NOTE: put your own distribution build steps here.
+          python -m pip install --upgrade pip
           python -m pip install build
           python -m build
+
+      - name: Assert exactly one version built (safety check)
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          # Expect one version across all dist files (wheel+sdist).
+          versions = set()
+          for p in Path('dist').glob('guess_the_duck-*'):
+            m = re.match(r"guess_the_duck-([0-9][^-/]*)", p.name)
+            if m:
+              versions.add(m.group(1))
+          if len(versions) != 1:
+            raise SystemExit(f"Expected exactly 1 version in dist/, found: {sorted(versions)}")
+          print("dist/ versions:", sorted(versions))
+          PY
 
       - name: Upload distributions
         uses: actions/upload-artifact@v4
