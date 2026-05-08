@@ -618,6 +618,7 @@ def guess_resolution():
         keypress_value = 2
         output_print = f"🎉 {Colours.GREEN}{Colours.BOLD}Congratulations, you have successfully guessed the entire deck of playing card{Colours.RESET} 🎉"
     clear_screen()
+    CLI_SW()
     card_loading(2)
     CLI_SW()
     clear_screen()
@@ -654,6 +655,7 @@ def main():
     CARD_IN_DECK = len(CardDeck)
     GUESS_DECK_NUMBER = GUESS_PROGRESS / 52
     GUESS_DECK_PERCENT = round(GUESS_DECK_NUMBER * 100, 2)
+    CLI_SW()
     save_game()
     while True:
         CLI_SW()
