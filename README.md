@@ -6,6 +6,7 @@ This project is called Guess the Duck, which is a CLI Python card game where you
 
 - Save File: A function where, when exiting out of the terminal window, the game automatically saves the progress of the game (Decks Completed, Correct Guesses in the Deck, Cards Removed from the Deck, etc.)
 - CLI: The game runs on the Command Line Interface which presents an easy to use, and global platform.
+- Command Line Interface Size Warning: Custom function that makes sure the terminal size is wider than 100 and taller than 30
 - ASCII: This game uses ASCII art to create the image of the cards and title screen.
 - ANSI escape codes: The game includes and uses ANSI escape codes which create colour and boldness
 - Pypi: This game uses Pypi which makes the game easier to access and run.
@@ -17,6 +18,7 @@ This project is called Guess the Duck, which is a CLI Python card game where you
 <img alt="Arrow Menu Example 1" src="assets/ArrowMenufull.png">
 <img alt="Arrow Menu Example 2" src="assets/ArrowMenu1.png">
 <img alt="Regular Round" src="assets/RegularRound.png">
+<img alt="Command Line Interface Size Warning function" src="assets/CLI_SW1.png">
 
 ## How to Access/Play
 
